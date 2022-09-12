@@ -36,6 +36,7 @@ jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
+    working_directory: ~/project/frontend
     steps:
       - checkout
       - run:
