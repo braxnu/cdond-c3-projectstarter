@@ -36,13 +36,13 @@ jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
-    working_directory: ~/project/frontend
     steps:
       - checkout
       - run:
           name: Build front-end
           command: |
             pwd
+            cd frontend
             ls -l
             npm i
             npm run build
