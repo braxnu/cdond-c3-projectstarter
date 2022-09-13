@@ -149,25 +149,25 @@ export class Employees extends React.Component<
 
   handleTableFilter = (filterText: string) => {
     this.props.actions.fetchEmployees(filterText);
-  }
+  };
 
   handleToggleArchive = (showActive: boolean) => {
     this.setState({
       showActiveEmployees: !showActive,
     });
-  }
+  };
 
   goBackToEmployees = () => {
     this.props.history.push('/employees');
-  }
+  };
 
   goToCreateEmployee = () => {
     this.props.history.push('/employees/new');
-  }
+  };
 
   componentDidMount = () => {
     this.props.actions.fetchEmployees();
-  }
+  };
 
   thirdLevelBreadcrumb: React.CSSProperties = {
     cursor: 'default',
@@ -240,7 +240,7 @@ export class Employees extends React.Component<
         </div>
       </div>
     );
-  }
+  };
 }
 
 function mapStateToProps(state: RootState): Partial<Employees.Props> {

@@ -110,7 +110,7 @@ class AddEmployee extends Component<AddEmployee.Props> {
       salaryType: SalaryType.YEARLY,
       effectiveDate: new Date(),
     });
-  }
+  };
 
   handleFormReset = async () => {
     const answer = await confirmDialog.fire({
@@ -126,7 +126,7 @@ class AddEmployee extends Component<AddEmployee.Props> {
       this.clearFields();
       this.goBackToEmployees();
     }
-  }
+  };
 
   handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const node = this.myRef.current;
@@ -164,27 +164,27 @@ class AddEmployee extends Component<AddEmployee.Props> {
     };
 
     await this.props.actions.addEmployee(payload);
-  }
+  };
 
   handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
   handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({
       ...this.state,
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
   handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({
       address: event.target.value,
     });
-  }
+  };
 
   handleBirthdateChanged(date: Date) {
     this.setState({
@@ -221,7 +221,7 @@ class AddEmployee extends Component<AddEmployee.Props> {
     this.setState({
       salaryType: event.target.value,
     });
-  }
+  };
 
   containerStyle: React.CSSProperties = {
     textAlign: 'center',
@@ -233,7 +233,7 @@ class AddEmployee extends Component<AddEmployee.Props> {
 
   goBackToEmployees = () => {
     this.props.history.push('/employees');
-  }
+  };
 
   thirdLevelBreadcrumb: React.CSSProperties = {
     cursor: 'default',

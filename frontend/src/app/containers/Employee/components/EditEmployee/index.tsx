@@ -17,7 +17,11 @@ import { SearchInput, Breadcrumb, SearchBar } from 'app/components';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 import { withAutoSave, Debounce } from './withAutoSave';
-import { isInputEmpty, isInputGreaterThanOrEqualMinValue, doesInputMatchesEmailPattern } from './inputValidations';
+import {
+  isInputEmpty,
+  isInputGreaterThanOrEqualMinValue,
+  doesInputMatchesEmailPattern,
+} from './inputValidations';
 
 export namespace EditEmployee {
   export interface Props extends RouteComponentProps<RoutePayload> {
@@ -55,7 +59,10 @@ export namespace EditEmployee {
   }
 }
 
-export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.State> {
+export class EditEmployee extends Component<
+  EditEmployee.Props,
+  EditEmployee.State
+> {
   state: EditEmployee.State;
   private employeeService: EmployeesService;
 
@@ -136,13 +143,13 @@ export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.Sta
       salaryType: SalaryType.YEARLY,
       effectiveDate: new Date(),
     });
-  }
+  };
 
   processInputChange = (
     statePayload: Partial<EditEmployee.State>,
     requestExecutionCallback: () => void,
     isInputValid: boolean = true,
-    invalidInputMessage?: string
+    invalidInputMessage?: string,
   ) => {
     const debounceCallback = () => {
       if (isInputValid) {
@@ -154,76 +161,96 @@ export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.Sta
 
     this.props.debounce(Object.keys(statePayload)[0], debounceCallback);
     this.setState({ ...this.state, ...statePayload });
-  }
+  };
 
   handleDisplayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-    const requestExecutionCallback =
-      () => this.props.actions.updateStringField(this.state.employeeId, { value: value }, name);
+    const requestExecutionCallback = () =>
+      this.props.actions.updateStringField(
+        this.state.employeeId,
+        { value },
+        name,
+      );
 
     this.processInputChange(
       { displayName: value },
       requestExecutionCallback,
       !isInputEmpty(value),
-      `Display Name field is required`
+      `Display Name field is required`,
     );
   };
 
   handleFirstNameChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const { middleName, lastName, secondLastName } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateNames(
-      this.state.employeeId,
-      { firstName: target.value, lastName, middleName, secondLastName }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateNames(this.state.employeeId, {
+        firstName: target.value,
+        lastName,
+        middleName,
+        secondLastName,
+      });
 
     this.processInputChange(
       { firstName: target.value },
       requestExecutionCallback,
       !isInputEmpty(target.value),
-      `First name field is required`
+      `First name field is required`,
     );
   };
 
-  handleMiddleNameChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+  handleMiddleNameChange = ({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>) => {
     const { firstName, lastName, secondLastName } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateNames(
-      this.state.employeeId,
-      { firstName, lastName, middleName: target.value, secondLastName }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateNames(this.state.employeeId, {
+        firstName,
+        lastName,
+        middleName: target.value,
+        secondLastName,
+      });
 
     this.processInputChange(
       { middleName: target.value },
-      requestExecutionCallback
+      requestExecutionCallback,
     );
   };
 
   handleLastNameChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const { firstName, middleName, secondLastName } = this.state;
     const { value } = target;
-    const requestExecutionCallback = () => this.props.actions.updateNames(
-      this.state.employeeId,
-      { firstName, middleName, lastName: value, secondLastName }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateNames(this.state.employeeId, {
+        firstName,
+        middleName,
+        lastName: value,
+        secondLastName,
+      });
 
     this.processInputChange(
       { lastName: value },
       requestExecutionCallback,
       !isInputEmpty(value),
-      `Last name field is required`
+      `Last name field is required`,
     );
   };
 
-  handleSecondLastNameChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+  handleSecondLastNameChange = ({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>) => {
     const { firstName, middleName, lastName } = this.state;
     const { value } = target;
-    const requestExecutionCallback = () => this.props.actions.updateNames(
-      this.state.employeeId,
-      { firstName, middleName, lastName, secondLastName: value }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateNames(this.state.employeeId, {
+        firstName,
+        middleName,
+        lastName,
+        secondLastName: value,
+      });
 
     this.processInputChange(
       { secondLastName: target.value },
-      requestExecutionCallback
+      requestExecutionCallback,
     );
   };
 
@@ -231,169 +258,200 @@ export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.Sta
     const { name, value } = event.target;
     const salaryMinValue = 0.01;
     const salaryValue = Number(value);
-    const requestExecutionCallback = () => this.props.actions.updateNumberField(
-      this.state.employeeId,
-      { value: salaryValue },
-      name
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateNumberField(
+        this.state.employeeId,
+        { value: salaryValue },
+        name,
+      );
 
     this.processInputChange(
       { salary: salaryValue },
       requestExecutionCallback,
       isInputGreaterThanOrEqualMinValue(salaryValue, salaryMinValue),
-      `Salary must be greater than or equal to ${salaryMinValue}`
+      `Salary must be greater than or equal to ${salaryMinValue}`,
     );
   };
 
   handleCompanyEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-    const requestExecutionCallback = () => this.props.actions.updateStringField(
-      this.state.employeeId,
-      { value },
-      name
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateStringField(
+        this.state.employeeId,
+        { value },
+        name,
+      );
 
     this.processInputChange(
       { companyEmail: value },
       requestExecutionCallback,
       !isInputEmpty(value) && doesInputMatchesEmailPattern(value),
-      `Company email is invalid`
+      `Company email is invalid`,
     );
   };
 
   handlePersonalEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-    const requestExecutionCallback = () => this.props.actions.updateStringField(
-      this.state.employeeId,
-      { value },
-      name
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateStringField(
+        this.state.employeeId,
+        { value },
+        name,
+      );
 
     this.processInputChange(
       { personalEmail: value },
       requestExecutionCallback,
       isInputEmpty(value) || doesInputMatchesEmailPattern(value),
-      `Personal email is invalid`
+      `Personal email is invalid`,
     );
   };
 
   handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-    const requestExecutionCallback = () => this.props.actions.updateStringField(
-      this.state.employeeId,
-      { value },
-      name
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateStringField(
+        this.state.employeeId,
+        { value },
+        name,
+      );
 
-    this.processInputChange(
-      { phoneNumber: value },
-      requestExecutionCallback
-    );
+    this.processInputChange({ phoneNumber: value }, requestExecutionCallback);
   };
 
   handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const { address, country, region, employeeId } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateAddress(
-      employeeId,
-      { address, country, region, city: value }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateAddress(employeeId, {
+        address,
+        country,
+        region,
+        city: value,
+      });
 
     this.processInputChange(
       { city: value },
       requestExecutionCallback,
       !isInputEmpty(value),
-      `City is invalid`
+      `City is invalid`,
     );
   };
 
   selectCountry = (val: React.ChangeEvent<string>) => {
     const country = (val as unknown) as string;
     const { address, city, region, employeeId } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateAddress(
-      employeeId,
-      { address, country, region, city }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateAddress(employeeId, {
+        address,
+        country,
+        region,
+        city,
+      });
 
     this.processInputChange(
-      { country: country },
+      { country },
       requestExecutionCallback,
       !isInputEmpty(country),
-      `Country is invalid`
+      `Country is invalid`,
     );
   };
 
   selectRegion = (val: React.ChangeEvent<string>) => {
     const region = (val as unknown) as string;
     const { address, city, country, employeeId } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateAddress(
-      employeeId,
-      { address, country, region, city }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateAddress(employeeId, {
+        address,
+        country,
+        region,
+        city,
+      });
     this.processInputChange(
       { region },
       requestExecutionCallback,
       !isInputEmpty(region),
-      `Region is invalid`
+      `Region is invalid`,
     );
   };
 
   handleAddressLineChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     const { country, region, city, employeeId } = this.state;
-    const requestExecutionCallback = () => this.props.actions.updateAddress(
-      employeeId,
-      { address: value, country, region, city }
-    );
+    const requestExecutionCallback = () =>
+      this.props.actions.updateAddress(employeeId, {
+        address: value,
+        country,
+        region,
+        city,
+      });
 
-    this.processInputChange(
-      { address: value },
-      requestExecutionCallback
-    );
-  }
+    this.processInputChange({ address: value }, requestExecutionCallback);
+  };
 
   handleBirthdateChanged = (date: Date | null) => {
     const birthdate = date || new Date();
     this.processInputChange(
-      { birthdate: birthdate },
-      () => this.props.actions.updateDateField(this.state.employeeId, { value: birthdate }, 'birthdate'), //thunk
+      { birthdate },
+      () =>
+        this.props.actions.updateDateField(
+          this.state.employeeId,
+          { value: birthdate },
+          'birthdate',
+        ), //thunk
     );
-  }
+  };
 
   handleEffectiveDateChanged = (date: Date | null) => {
     const effectiveDate = date || new Date();
     this.processInputChange(
-      { effectiveDate: effectiveDate },
-      () => this.props.actions.updateDateField(this.state.employeeId, { value: effectiveDate }, 'effectiveDate'), //thunk
+      { effectiveDate },
+      () =>
+        this.props.actions.updateDateField(
+          this.state.employeeId,
+          { value: effectiveDate },
+          'effectiveDate',
+        ), //thunk
       !isInputEmpty(effectiveDate.toString()),
-      `Effective Date is invalid` //error notification
+      `Effective Date is invalid`, //error notification
     );
-  }
+  };
 
   handleTagsChange = (newTags: Array<any>) => {
     this.processInputChange(
       { tags: newTags },
-      () => this.props.actions.updateStringField(this.state.employeeId, { value: JSON.stringify(newTags) }, 'tags'), //thunk
+      () =>
+        this.props.actions.updateStringField(
+          this.state.employeeId,
+          { value: JSON.stringify(newTags) },
+          'tags',
+        ), //thunk
     );
-  }
+  };
 
-  handleSearch = (searchText: string) => { };
+  handleSearch = (searchText: string) => {};
 
   handleSalaryTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     this.processInputChange(
       { salaryType: value as SalaryType },
-      () => this.props.actions.updateStringField(this.state.employeeId, { value }, 'salaryType'), //thunk
+      () =>
+        this.props.actions.updateStringField(
+          this.state.employeeId,
+          { value },
+          'salaryType',
+        ), //thunk
     );
-  }
+  };
 
   statusOnChange = () => {
     const { employeeId, isActive } = this.state;
-    this.processInputChange(
-      { isActive: !isActive },
-      () => isActive ? this.props.actions.deactivateEmployee(employeeId) : this.props.actions.activateEmployee(employeeId),
+    this.processInputChange({ isActive: !isActive }, () =>
+      isActive
+        ? this.props.actions.deactivateEmployee(employeeId)
+        : this.props.actions.activateEmployee(employeeId),
     );
-  }
+  };
 
   containerStyle: React.CSSProperties = {
     textAlign: 'center',
@@ -405,7 +463,7 @@ export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.Sta
 
   goBackToEmployees = () => {
     this.props.history.push('/employees');
-  }
+  };
 
   thirdLevelBreadcrumb: React.CSSProperties = {
     cursor: 'default',
@@ -771,7 +829,7 @@ export class EditEmployee extends Component<EditEmployee.Props, EditEmployee.Sta
                   <div
                     className={`${style['e-status-mark']} ${
                       !this.state.isActive ? style.disabled : style.active
-                      }`}
+                    }`}
                   />
                   <select
                     onChange={this.statusOnChange}

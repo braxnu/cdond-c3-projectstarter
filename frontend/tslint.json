@@ -5,6 +5,7 @@
     "no-unused-expression": true
   },
   "rules": {
+    "comment-format": [false],
     "eofline": false,
     "quotemark": [true, "single"],
     "prefer-conditional-expression": false,
@@ -25,6 +26,7 @@
     "max-classes-per-file": [false],
     "variable-name": [false],
     "one-line": [false],
+    "semicolon": [false, "always"],
     "one-variable-per-declaration": [false],
     "no-console": [true, "log"]
   },

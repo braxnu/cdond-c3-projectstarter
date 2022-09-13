@@ -62,7 +62,7 @@ export class SearchInput extends Component<
         }
       }, 500),
     });
-  }
+  };
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const { searchText, typingTimeout } = this.state;
@@ -72,7 +72,7 @@ export class SearchInput extends Component<
 
       this.props.onSearchChange(searchText);
     }
-  }
+  };
 
   render() {
     if (!shouldRender('SearchInput')) return null;

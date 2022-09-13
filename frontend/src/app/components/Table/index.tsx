@@ -78,7 +78,7 @@ export class Table extends Component<Table.Props, Table.State> {
       showActiveEmployees: true,
     });
     this.props.onToggleArchive(this.state.showActiveEmployees);
-  }
+  };
 
   toggleArchiveTab = (e: any) => {
     e.preventDefault();
@@ -87,16 +87,15 @@ export class Table extends Component<Table.Props, Table.State> {
       showActiveEmployees: false,
     });
     this.props.onToggleArchive(this.state.showActiveEmployees);
-  }
+  };
 
   render() {
     const { data, columns, loading, defaultSorted } = this.props;
     return (
       <div
         className={`
-        ${appstyle['g-content-fluid']} ${appstyle['table-container']} ${
-          appstyle['grid-container']
-        } ${appstyle.fluid} ${appstyle['grid-padding-x']} ${appstyle.full}
+        ${appstyle['g-content-fluid']} ${appstyle['table-container']}` +
+        ` ${appstyle['grid-container']} ${appstyle.fluid} ${appstyle['grid-padding-x']} ${appstyle.full}
         `}
         style={this.textStyle}
       >
@@ -108,9 +107,7 @@ export class Table extends Component<Table.Props, Table.State> {
             ${appstyle['table-controls']}`}
           >
             <div
-              className={`${appstyle.cell} ${appstyle['medium-12']} ${
-                appstyle['small-12']
-              } ${appstyle['large-8']}`}
+              className={`${appstyle.cell} ${appstyle['medium-12']} ${appstyle['small-12']} ${appstyle['large-8']}`}
             >
               <ul className={`${appstyle.tabs}`} data-tabs='emp-list-control'>
                 <li
@@ -154,9 +151,7 @@ export class Table extends Component<Table.Props, Table.State> {
               </div>
             </div>
             <div
-              className={`${appstyle.cell} ${appstyle['medium-12']} ${
-                appstyle['small-12']
-              } ${appstyle['large-4']} ${appstyle['text-right']}`}
+              className={`${appstyle.cell} ${appstyle['medium-12']} ${appstyle['small-12']} ${appstyle['large-4']} ${appstyle['text-right']}`}
             />
           </div>
           <div className={`${appstyle['g-main']}`}>

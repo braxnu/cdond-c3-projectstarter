@@ -138,11 +138,11 @@ export class ViewEmployee extends Component<
 
   goBackToEmployees = () => {
     this.props.history.push('/employees');
-  }
+  };
 
   goToEditEmployee = () => {
     this.props.history.push(`/employees/${this.state.employeeId}/edit`);
-  }
+  };
 
   thirdLevelBreadcrumb: React.CSSProperties = {
     cursor: 'default',
@@ -355,7 +355,9 @@ export class ViewEmployee extends Component<
                     className={`${style.cell} ${style['small-12']} ${style['medium-6']}`}
                   >
                     <div className={style['input-cell']}>
-                      <label htmlFor='companyEmail'>Company Email Address</label>
+                      <label htmlFor='companyEmail'>
+                        Company Email Address
+                      </label>
                       <div className={`${style['read-input']}`}>
                         {this.state.companyEmail}
                       </div>
