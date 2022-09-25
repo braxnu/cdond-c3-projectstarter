@@ -12,12 +12,12 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
-  pre_tasks:
-    - name: "wait for DB host to become reachable/usable."
-      ansible.builtin.wait_for:
-        sleep: 10
-        host: "{{ lookup('env', 'TYPEORM_HOST')}}"
-        port: 3030
+  # pre_tasks:
+  #   - name: "wait for DB host to become reachable/usable."
+  #     ansible.builtin.wait_for:
+  #       sleep: 10
+  #       host: "{{ lookup('env', 'TYPEORM_HOST')}}"
+  #       port: 3030
 
     # - name: "install python for Ansible."
     #   # Your code here
