@@ -121,6 +121,8 @@ jobs:
     docker:
       - image: cimg/aws:2022.06
     steps:
+      # REMOVE THIS AFTER DEPLOYMENT CONFIRMED TO WORK
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
