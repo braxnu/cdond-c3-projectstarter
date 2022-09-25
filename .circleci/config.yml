@@ -121,7 +121,6 @@ jobs:
     docker:
       - image: cimg/aws:2022.06
     steps:
-      # REMOVE THIS AFTER DEPLOYMENT CONFIRMED TO WORK
       - checkout
       - run:
           name: Ensure back-end infrastructure exists
@@ -176,7 +175,7 @@ jobs:
             ls -la
             ls -la workspace
             cat workspace/project/.circleci/ansible/inventory.txt
-            which ansible
+            which ansible || true
       - run:
           name: Install dependencies
           command: |
