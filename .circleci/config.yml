@@ -142,13 +142,19 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' --output text >> .circleci/ansible/inventory.txt
+            awDs ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack \
+              --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
+            aws cloudformation delete-stack \
+              --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
 
   configure-infrastructure:
     docker:
