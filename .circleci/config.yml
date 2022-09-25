@@ -161,7 +161,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: cimg/aws:2022.06
+      - image: cimg/python:3.10.7
     steps:
       - checkout
       - add_ssh_keys:
@@ -170,11 +170,18 @@ jobs:
       - attach_workspace:
           at: workspace
       - run:
-          name: Install dependencies
+          name: Debug output
           command: |
             pwd
             ls -la
             ls -la workspace
+            cat workspace/project/.circleci/ansible/inventory.txt
+            which ansible
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m pip install --user ansible
+            which ansible
             exit 1
       - run:
           name: Configure server
