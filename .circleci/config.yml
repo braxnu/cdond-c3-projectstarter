@@ -131,7 +131,6 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --parameter-overrides ID=$CIRCLE_WORKFLOW_ID
               #--tags project=your-tag \
-            # exit 1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -140,12 +139,10 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --parameter-overrides ID=$CIRCLE_WORKFLOW_ID
               #--tags project=your-tag \
-            # exit 1
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            # Your code here
-            exit 1
+            aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
