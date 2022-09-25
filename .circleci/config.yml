@@ -127,7 +127,7 @@ jobs:
             aws cloudformation deploy \
               --region us-east-1
               --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" \
-              --template-file .circleci/files/backend.yml \
+              --template-file .circleci/files/backend.yml
               #--tags project=your-tag \
               # --parameter-overrides ID="your workflow id"
             # exit 1
@@ -137,7 +137,7 @@ jobs:
             aws cloudformation deploy \
               --region us-east-1
               --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" \
-              --template-file .circleci/files/frontend.yml \
+              --template-file .circleci/files/frontend.yml
               #--tags project=your-tag \
               # --parameter-overrides ID="your workflow id"
             # exit 1
