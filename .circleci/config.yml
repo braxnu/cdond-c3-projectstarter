@@ -168,25 +168,24 @@ jobs:
             - "e6:d2:1d:5f:a5:94:bd:4a:89:3c:71:35:31:62:d5:29"
       - attach_workspace:
           at: workspace
-      - run:
-          name: Debug output
-          command: |
-            pwd
-            ls -la
-            ls -la workspace
-            cat workspace/project/.circleci/ansible/inventory.txt
-            which ansible || true
+      # - run:
+      #     name: Debug output
+      #     command: |
+      #       pwd
+      #       ls -la
+      #       ls -la workspace
+      #       cat workspace/project/.circleci/ansible/inventory.txt
+      #       which ansible || true
       - run:
           name: Install dependencies
           command: |
             python3 -m pip install --user ansible
-            which ansible
-            exit 1
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
+            ansible-playbook \
+              -i workspace/project/.circleci/ansible/inventory.txt \
+              workspace/project/.circleci/ansible/configure-server.yml
       - run:
           name: Destroy environments
           when: on_fail
