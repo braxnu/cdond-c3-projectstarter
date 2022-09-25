@@ -185,7 +185,7 @@ jobs:
           command: |
             ansible-playbook \
               -i workspace/project/.circleci/ansible/inventory.txt \
-              workspace/project/.circleci/ansible/configure-server.yml
+              .circleci/ansible/configure-server.yml
       - run:
           name: Destroy environments
           when: on_fail
