@@ -168,14 +168,15 @@ jobs:
             - "e6:d2:1d:5f:a5:94:bd:4a:89:3c:71:35:31:62:d5:29"
       - attach_workspace:
           at: workspace
-      # - run:
-      #     name: Debug output
-      #     command: |
-      #       pwd
-      #       ls -la
-      #       ls -la workspace
-      #       cat workspace/project/.circleci/ansible/inventory.txt
-      #       which ansible || true
+      - run:
+          name: Debug output
+          command: |
+            pwd
+            ssh-add -L
+            ls -la
+            ls -la workspace
+            cat workspace/project/.circleci/ansible/inventory.txt
+            which ansible || true
       - run:
           name: Install dependencies
           command: |
@@ -186,14 +187,15 @@ jobs:
             ansible-playbook \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
-      # - run:
-      #     name: Destroy environments
-      #     when: on_fail
-      #     command: |
-      #       aws cloudformation delete-stack \
-      #         --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
-      #       aws cloudformation delete-stack \
-      #         --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
+            exit 1
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack \
+              --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
+            aws cloudformation delete-stack \
+              --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
 
   run-migrations:
     docker:
