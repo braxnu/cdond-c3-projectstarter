@@ -120,6 +120,10 @@ jobs:
   deploy-infrastructure:
     docker:
       - image: cimg/aws:2022.06
+    environment:
+      AWS_REGION: $AWS_REGION
+      AWS_SECRET_KEY: $AWS_SECRET_KEY
+      AWS_ACCESS_KEY: $AWS_ACCESS_KEY
     steps:
       # REMOVE THIS AFTER DEPLOYMENT CONFIRMED TO WORK
       - checkout
