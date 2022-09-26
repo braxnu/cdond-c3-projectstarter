@@ -132,6 +132,10 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --parameter-overrides ID=$CIRCLE_WORKFLOW_ID
               #--tags project=your-tag \
+
+            aws cloudformation describe-stacks \
+              --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" \
+              --query 'Stacks[0].Outputs'
       - run:
           name: Ensure front-end infrastructure exist
           command: |

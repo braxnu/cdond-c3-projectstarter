@@ -29,8 +29,8 @@ Resources:
           Resource: !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket', /*]]
 
 Outputs:
-  S3BucketName:
-    Value: !GetAtt WebsiteBucket.BucketName
+  S3BucketDomainName:
+    Value: !GetAtt WebsiteBucket.DomainName
     Description: S3 Bucket name
   WebsiteURL:
     Value: !GetAtt WebsiteBucket.WebsiteURL
