@@ -30,7 +30,7 @@ Resources:
 
 Outputs:
   S3BucketName:
-    Value: !GetAtt WebsiteBucket.Name
+    Value: !GetAtt WebsiteBucket.BucketName
     Description: S3 Bucket name
   WebsiteURL:
     Value: !GetAtt WebsiteBucket.WebsiteURL
