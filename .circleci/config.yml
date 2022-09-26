@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  node: circleci/node@x.y
+
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -221,30 +224,32 @@ jobs:
       - image: cimg/aws:2022.06
     steps:
       - checkout
+      - node/install:
+          node-version: '13.8.0'
       - restore_cache:
           keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
-            pwd
             cd frontend
+            npm i
             ls -l
-            BUCKET_NAME=udapeople-$CIRCLE_WORKFLOW_ID
-            echo "BUCKET_NAME $BUCKET_NAME"
-            aws s3 cp dist s3://$BUCKET_NAME/ --recursive
-      - run:
-          name: Get backend url
-          command: |
+            # - run:
+            #     name: Get backend url
+            #     command: |
             BACKEND_HOSTNAME=$(aws cloudformation describe-stacks \
               --stack-name udacity-backend-$CIRCLE_WORKFLOW_ID \
               --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
               --output text)
-            export API_URL="http://${BACKEND_HOSTNAME}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Deploy frontend objects
-          command: |
-            # your code here
+            API_URL="http://${BACKEND_HOSTNAME}:3030"
+            echo "API_URL ${API_URL}"
+            npm run build
+            # - run:
+            #     name: Deploy frontend objects
+            #     command: |
+            BUCKET_NAME=udapeople-$CIRCLE_WORKFLOW_ID
+            echo "BUCKET_NAME $BUCKET_NAME"
+            aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
       # Here's where you will add some code to rollback on failure
 
   deploy-backend:
