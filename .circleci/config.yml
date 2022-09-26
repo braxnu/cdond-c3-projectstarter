@@ -45,6 +45,7 @@ jobs:
             npm i
             npm run build
             ls -l
+            ls -l dist
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -63,6 +64,7 @@ jobs:
             npm i
             npm run build
             ls -l
+            ls -l dist
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -227,14 +229,17 @@ jobs:
             pwd
             cd frontend
             ls -l
-            BUCKET_NAME=$(aws s3api list-buckets --query 'Buckets[*].Name' --output text)
+            BUCKET_NAME=udapeople-$CIRCLE_WORKFLOW_ID
             echo "BUCKET_NAME $BUCKET_NAME"
-
+            aws s3 cp dist s3://$BUCKET_NAME/ --recursive
       - run:
           name: Get backend url
           command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
+            BACKEND_HOSTNAME=$(aws cloudformation describe-stacks \
+              --stack-name udacity-backend-$CIRCLE_WORKFLOW_ID \
+              --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
+              --output text)
+            export API_URL="http://${BACKEND_HOSTNAME}:3030"
             echo "${API_URL}"
       - run:
           name: Deploy frontend objects
