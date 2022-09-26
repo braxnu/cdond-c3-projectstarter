@@ -196,8 +196,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm i
-            env
             npm run migrations
       - run:
           name: Send migration results to memstash
