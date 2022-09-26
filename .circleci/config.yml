@@ -241,7 +241,7 @@ jobs:
               --stack-name udacity-backend-$CIRCLE_WORKFLOW_ID \
               --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
               --output text)
-            API_URL="http://${BACKEND_HOSTNAME}:3030"
+            export API_URL="http://${BACKEND_HOSTNAME}:3030"
             echo "API_URL ${API_URL}"
             npm run build
             # - run:
