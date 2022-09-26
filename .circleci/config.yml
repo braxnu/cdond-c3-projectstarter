@@ -184,7 +184,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook \
+            ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
             exit 1
