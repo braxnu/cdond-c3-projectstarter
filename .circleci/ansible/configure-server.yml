@@ -27,12 +27,16 @@
       ansible.builtin.shell:
         cmd: curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 
-    - name: "Install NodeJS."
+    - name: "Install NodeJS"
       ansible.builtin.apt:
         name: nodejs
         state: present
 
-  # Get the environment variables from CircleCI and add to the EC2 instance
+    - name: "Install PM2"
+      community.general.npm:
+        name: pm2
+        global: true
+
   environment:
     - TYPEORM_CONNECTION: postgres
     - TYPEORM_MIGRATIONS_DIR: ./src/migrations
