@@ -187,7 +187,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/python:3.10.7
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -197,22 +197,29 @@ jobs:
           command: |
             cd backend
             npm run migrations
-      - run:
-          name: Send migration results to memstash
-          command: |
-            # Your code here
-            exit 1
+      # - run:
+      #     name: Send migration results to memstash
+      #     command: |
+      #       # Your code here
+      #       exit 1
      # Here's where you will add some code to rollback on failure
 
   deploy-frontend:
     docker:
       - image: cimg/aws:2022.06
     steps:
-      # Checkout code from git
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            pwd
+            cd frontend
+            ls -l
+            BUCKET_NAME=$(aws s3api list-buckets --query 'Buckets[*].Name' --output text)
+            echo "BUCKET_NAME $BUCKET_NAME"
+
       - run:
           name: Get backend url
           command: |
@@ -229,7 +236,7 @@ jobs:
     docker:
       - image: cimg/python:3.10.6
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
       # attach workspace
       - run:
@@ -246,7 +253,7 @@ jobs:
     docker:
       - image: circleci/circleci-cli:alpine
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -269,7 +276,7 @@ jobs:
     docker:
       - image: cimg/aws:2022.06
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
