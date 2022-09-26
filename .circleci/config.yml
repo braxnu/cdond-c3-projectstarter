@@ -66,11 +66,13 @@ jobs:
             cd backend
             npm i
             npm run build
-            ls -l
-            ls -l dist
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - backend/dist
 
   test-frontend:
     docker:
@@ -234,9 +236,6 @@ jobs:
             cd frontend
             npm i
             ls -l
-            # - run:
-            #     name: Get backend url
-            #     command: |
             BACKEND_HOSTNAME=$(aws cloudformation describe-stacks \
               --stack-name udacity-backend-$CIRCLE_WORKFLOW_ID \
               --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
@@ -244,9 +243,6 @@ jobs:
             export API_URL="http://${BACKEND_HOSTNAME}:3030"
             echo "API_URL ${API_URL}"
             npm run build
-            # - run:
-            #     name: Deploy frontend objects
-            #     command: |
             BUCKET_NAME=udapeople-$CIRCLE_WORKFLOW_ID
             echo "BUCKET_NAME $BUCKET_NAME"
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
@@ -254,19 +250,30 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: cimg/python:3.10.6
+      - image: cimg/python:3.10.7
     steps:
       - checkout
-      # Add ssh keys with fingerprint
-      # attach workspace
+      - add_ssh_keys:
+          fingerprints:
+            - "e6:d2:1d:5f:a5:94:bd:4a:89:3c:71:35:31:62:d5:29"
+      - attach_workspace:
+          at: ~/workspace
+      - run:
+          name: Debug
+          command: |
+            ls -l ~/workspace || true
+            ls -l ~/workspace/backend/dist || true
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            python3 -m pip install --user ansible
+            ansible-galaxy collection install community.general
       - run:
           name: Deploy backend
           command: |
-            # your code here
+            ansible-playbook -v \
+              -i workspace/project/.circleci/ansible/inventory.txt \
+              .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure
 
   smoke-test:
