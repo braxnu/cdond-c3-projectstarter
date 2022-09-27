@@ -40,7 +40,7 @@
     - name: "Start the service"
       ansible.builtin.shell:
         chdir: ~/backend
-        cmd: (nohup npm run start 2>&1 &)
+        cmd: nohup npm run start 2>&1 &
 
   environment:
     - TYPEORM_CONNECTION: postgres
