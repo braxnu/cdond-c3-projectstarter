@@ -250,6 +250,8 @@ jobs:
             cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
             npm i
+            echo "API_URL ${API_URL}"
+            export API_URL=$API_URL
             npm run build
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
 
