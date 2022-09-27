@@ -176,6 +176,8 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
+            cat .local-vars
+
             aws ec2 describe-instances \
               --filters "Name=instance-state-name,Values=running" \
               --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' \
@@ -272,13 +274,14 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/circleci-cli:alpine
+      - image: curlimages/curl
     steps:
       - attach_workspace:
           at: ~/workspace
       - run:
           name: Backend smoke test
           command: |
+            cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
             curl -sL "$API_URL/api/Employees" > /dev/null
       - run:
