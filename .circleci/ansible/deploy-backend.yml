@@ -20,13 +20,17 @@
 
     - name: "Copy source and node_modules"
       ansible.builtin.copy:
-        src: ./backend
+        src: ~/project/backend
         dest: ./
 
     - name: "Copy built assets"
       ansible.builtin.copy:
         src: ~/workspace/backend/dist
         dest: ./dist
+
+    - name: "Debug 3"
+      ansible.builtin.shell:
+        cmd: ls -l
 
   environment:
     - TYPEORM_CONNECTION: postgres
