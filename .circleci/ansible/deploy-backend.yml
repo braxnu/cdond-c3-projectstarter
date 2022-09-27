@@ -38,9 +38,10 @@
         cmd: npm install
 
     - name: "Start the service"
-      ansible.builtin.shell:
-        chdir: ~/backend
-        cmd: nohup npm run start 2>&1 &
+      ansible.builtin.shell: |
+        cd ~/backend
+        env | grep TYPEORM
+        nohup npm run start 2>&1 &
 
   environment:
     - TYPEORM_CONNECTION: postgres
