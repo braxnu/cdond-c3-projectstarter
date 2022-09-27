@@ -6,15 +6,22 @@ orbs:
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here
     steps:
       - run:
-          name: Destroy environments
-          when: on_fail
+          name: Delete all files from S3 bucket
+          when: always
           command: |
-            aws cloudformation delete-stack \
-              --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
+            aws s3 rm s3://"udacity-backend-$CIRCLE_WORKFLOW_ID" --recursive
+      - run:
+          name: Delete backend stack
+          when: always
+          command: |
+            aws cloudformation delete-stack --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
+      - run:
+          name: Delete frontend stack
+          when: always
+          command: |
+            aws cloudformation delete-stack --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -200,6 +207,8 @@ jobs:
               --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
             aws cloudformation delete-stack \
               --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
+      - destroy-environment:
+          when: on_fail
 
   configure-infrastructure:
     docker:
@@ -222,6 +231,8 @@ jobs:
             ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
+      - destroy-environment:
+          when: on_fail
 
   run-migrations:
     docker:
@@ -235,6 +246,8 @@ jobs:
           command: |
             cd backend
             npm run migrations
+      - destroy-environment:
+          when: on_fail
 
   deploy-frontend:
     docker:
@@ -258,6 +271,8 @@ jobs:
             export API_URL=$API_URL
             npm run build
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
+      - destroy-environment:
+          when: on_fail
 
   deploy-backend:
     docker:
@@ -280,6 +295,8 @@ jobs:
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
+      - destroy-environment:
+          when: on_fail
 
   smoke-test:
     docker:
@@ -291,16 +308,13 @@ jobs:
           name: Backend smoke test
           command: |
             sleep 30
-            cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
-            echo API_URL=$API_URL
             export API_URL=$API_URL
             curl "$API_URL/api/Employees" > /dev/null
       - run:
           name: Frontend smoke test
           command: |
             source ~/workspace/.local-vars
-            echo BUCKET_URL=$BUCKET_URL
             export BUCKET_URL=$BUCKET_URL
             curl "$BUCKET_URL" | grep Welcome > /dev/null
 
