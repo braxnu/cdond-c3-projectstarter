@@ -8,7 +8,6 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
-      - aws-cli/setup
       - run:
           name: Delete all files from S3 bucket
           when: on_fail
@@ -225,7 +224,6 @@ jobs:
             ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
-      - destroy-environment
 
   run-migrations:
     docker:
@@ -239,7 +237,6 @@ jobs:
           command: |
             cd backend
             npm run migrations
-      - destroy-environment
 
   deploy-frontend:
     docker:
@@ -286,7 +283,6 @@ jobs:
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
-      - destroy-environment
 
   smoke-test:
     docker:
