@@ -10,6 +10,14 @@
     - ansible_stdout_callback: yaml
 
   tasks:
+    - name: "Debug 1"
+      ansible.builtin.shell:
+        cmd: pwd
+
+    - name: "Debug 2"
+      ansible.builtin.shell:
+        cmd: ls -l
+
     - name: "Copy source and node_modules"
       ansible.builtin.copy:
         src: ./backend
