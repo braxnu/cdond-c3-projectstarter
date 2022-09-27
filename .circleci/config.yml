@@ -273,9 +273,15 @@ jobs:
           command: |
             pwd
             ls -l
+            echo AAA
             ls -l ~/
+            echo BBB
             ls -l ~/workspace || true
-            ls -l ~/project || true
+            echo CCC
+            ls -l ~/workspace/backend || true
+            echo DDD
+            ls -l ~/workspace/backend/dist || true
+            echo EEE
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
