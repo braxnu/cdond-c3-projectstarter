@@ -9,14 +9,17 @@ commands:
     steps:
       - run:
           name: Delete all files from S3 bucket
+          when: on_fail
           command: |
-            aws s3 rm s3://"udacity-backend-$CIRCLE_WORKFLOW_ID" --recursive || true
+            aws s3 rm "s3://udacity-backend-$CIRCLE_WORKFLOW_ID" --recursive || true
       - run:
           name: Delete backend stack
+          when: on_fail
           command: |
             aws cloudformation delete-stack --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" || true
       - run:
           name: Delete frontend stack
+          when: on_fail
           command: |
             aws cloudformation delete-stack --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" || true
 
@@ -196,8 +199,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - destroy-environment:
-          when: on_fail
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -221,8 +223,7 @@ jobs:
             ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
-      - destroy-environment:
-          when: on_fail
+      - destroy-environment
 
   run-migrations:
     docker:
@@ -236,8 +237,7 @@ jobs:
           command: |
             cd backend
             npm run migrations
-      - destroy-environment:
-          when: on_fail
+      - destroy-environment
 
   deploy-frontend:
     docker:
@@ -261,8 +261,7 @@ jobs:
             export API_URL=$API_URL
             npm run build
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
-      - destroy-environment:
-          when: on_fail
+      - destroy-environment
 
   deploy-backend:
     docker:
@@ -285,8 +284,7 @@ jobs:
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
-      - destroy-environment:
-          when: on_fail
+      - destroy-environment
 
   smoke-test:
     docker:
