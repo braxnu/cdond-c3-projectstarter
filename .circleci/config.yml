@@ -9,19 +9,16 @@ commands:
     steps:
       - run:
           name: Delete all files from S3 bucket
-          when: always
           command: |
-            aws s3 rm s3://"udacity-backend-$CIRCLE_WORKFLOW_ID" --recursive
+            aws s3 rm s3://"udacity-backend-$CIRCLE_WORKFLOW_ID" --recursive || true
       - run:
           name: Delete backend stack
-          when: always
           command: |
-            aws cloudformation delete-stack --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
+            aws cloudformation delete-stack --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" || true
       - run:
           name: Delete frontend stack
-          when: always
           command: |
-            aws cloudformation delete-stack --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
+            aws cloudformation delete-stack --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" || true
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -199,14 +196,6 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            aws cloudformation delete-stack \
-              --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID"
-            aws cloudformation delete-stack \
-              --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID"
       - destroy-environment:
           when: on_fail
 
