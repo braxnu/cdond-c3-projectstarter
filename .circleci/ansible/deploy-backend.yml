@@ -41,7 +41,7 @@
       ansible.builtin.shell: |
         cd ~/backend
         env | grep TYPEORM
-        nohup npm run start 2>&1 &
+        nohup npm run start 2>&1 </dev/null >output.log &
 
   environment:
     - TYPEORM_CONNECTION: postgres
