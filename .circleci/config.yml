@@ -292,14 +292,15 @@ jobs:
           command: |
             cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
+            echo API_URL=$API_URL
             export API_URL=$API_URL
-            curl -sL "$API_URL/api/Employees" > /dev/null
+            curl "$API_URL/api/Employees" > /dev/null
       - run:
           name: Frontend smoke test
           command: |
             source ~/workspace/.local-vars
             export BUCKET_URL=$BUCKET_URL
-            curl -sL "$BUCKET_URL" | grep Welcome > /dev/null
+            curl "$BUCKET_URL" | grep Welcome > /dev/null
 
   cloudfront-update:
     docker:
