@@ -299,6 +299,7 @@ jobs:
           name: Frontend smoke test
           command: |
             source ~/workspace/.local-vars
+            echo BUCKET_URL=$BUCKET_URL
             export BUCKET_URL=$BUCKET_URL
             curl "$BUCKET_URL" | grep Welcome > /dev/null
 
