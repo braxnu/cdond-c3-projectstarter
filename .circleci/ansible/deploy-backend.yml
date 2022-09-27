@@ -26,11 +26,16 @@
     - name: "Copy built assets"
       ansible.builtin.copy:
         src: ~/workspace/backend/dist
-        dest: ./dist
+        dest: ./backend
 
     - name: "Debug 3"
       ansible.builtin.shell:
         cmd: ls -l
+
+    - name: "NPM install"
+      ansible.builtin.shell:
+        chdir: ~/backend
+        cmd: npm install
 
   environment:
     - TYPEORM_CONNECTION: postgres
