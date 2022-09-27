@@ -271,6 +271,11 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            pwd
+            ls -l
+            ls -l ~/
+            ls -l ~/workspace || true
+            ls -l ~/project || true
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
