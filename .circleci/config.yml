@@ -138,11 +138,17 @@ jobs:
               --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" \
               --template-file .circleci/files/backend.yml \
               --parameter-overrides ID=$CIRCLE_WORKFLOW_ID
-              #--tags project=your-tag \
 
-            aws cloudformation describe-stacks \
+            export BACKEND_HOSTNAME=$(aws cloudformation describe-stacks \
               --stack-name "udacity-backend-$CIRCLE_WORKFLOW_ID" \
-              --query 'Stacks[0].Outputs'
+              --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
+              --output text)
+
+            echo "BACKEND_HOSTNAME=$BACKEND_HOSTNAME" >> .local-vars
+
+            export API_URL="http://${BACKEND_HOSTNAME}:3030"
+
+            echo "API_URL=${API_URL}" >> .local-vars
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -150,11 +156,23 @@ jobs:
               --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" \
               --template-file .circleci/files/frontend.yml \
               --parameter-overrides ID=$CIRCLE_WORKFLOW_ID
-              #--tags project=your-tag \
 
-            aws cloudformation describe-stacks \
+            export BUCKET_URL=$(aws cloudformation describe-stacks \
               --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" \
-              --query 'Stacks[0].Outputs'
+              --query 'Stacks[0].Outputs[?OutputKey==`WebsiteURL`].OutputValue' \
+              --output text)
+
+            export BUCKET_NAME=$(aws cloudformation describe-stack-resources \
+              --stack-name "udacity-frontend-$CIRCLE_WORKFLOW_ID" \
+              --query 'StackResources[?LogicalResourceId==`WebsiteBucket`].PhysicalResourceId' \
+              --output text)
+
+            echo "BUCKET_URL=$BUCKET_URL" >> .local-vars
+            echo "BUCKET_NAME=$BUCKET_NAME" >> .local-vars
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .local-vars
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -186,11 +204,6 @@ jobs:
       - attach_workspace:
           at: workspace
       - run:
-          name: Debug output
-          command: |
-            ssh-add -l
-            cat workspace/project/.circleci/ansible/inventory.txt
-      - run:
           name: Install dependencies
           command: |
             python3 -m pip install --user ansible
@@ -214,12 +227,6 @@ jobs:
           command: |
             cd backend
             npm run migrations
-      # - run:
-      #     name: Send migration results to memstash
-      #     command: |
-      #       # Your code here
-      #       exit 1
-     # Here's where you will add some code to rollback on failure
 
   deploy-frontend:
     docker:
@@ -230,23 +237,16 @@ jobs:
           node-version: '13.8.0'
       - restore_cache:
           keys: [frontend-build]
+      - attach_workspace:
+          at: ~/workspace
       - run:
           name: Install dependencies
           command: |
             cd frontend
+            source ~/workspace/.local-vars
             npm i
-            ls -l
-            BACKEND_HOSTNAME=$(aws cloudformation describe-stacks \
-              --stack-name udacity-backend-$CIRCLE_WORKFLOW_ID \
-              --query 'Stacks[0].Outputs[?OutputKey==`InstancePublicHostname`].OutputValue' \
-              --output text)
-            export API_URL="http://${BACKEND_HOSTNAME}:3030"
-            echo "API_URL ${API_URL}"
             npm run build
-            BUCKET_NAME=udapeople-$CIRCLE_WORKFLOW_ID
-            echo "BUCKET_NAME $BUCKET_NAME"
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
-      # Here's where you will add some code to rollback on failure
 
   deploy-backend:
     docker:
@@ -269,30 +269,23 @@ jobs:
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
-      # Here's where you will add some code to rollback on failure
 
   smoke-test:
     docker:
       - image: circleci/circleci-cli:alpine
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/workspace
       - run:
-          name: Install dependencies
+          name: Backend smoke test
           command: |
-            # your code here
+            source ~/workspace/.local-vars
+            curl -sL "$API_URL/api/Employees" > /dev/null
       - run:
-          name: Get backend url
+          name: Frontend smoke test
           command: |
-            # your code here
-      - run:
-          name: Backend smoke test.
-          command: |
-            # your code here
-      - run:
-          name: Frontend smoke test.
-          command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure
+            source ~/workspace/.local-vars
+            curl -sL "$BUCKET_URL" | grep Welcome > /dev/null
 
   cloudfront-update:
     docker:
