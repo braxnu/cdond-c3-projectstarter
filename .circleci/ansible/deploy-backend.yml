@@ -28,11 +28,6 @@
         src: ~/workspace/backend/dist
         dest: ./backend
 
-    - name: "Prepare the service"
-      ansible.builtin.copy:
-        src: ~/project/util/udapeople.service
-        dest: /etc/systemd/system/udapeople.service
-
     - name: "Debug 3"
       ansible.builtin.shell:
         cmd: ls -l
