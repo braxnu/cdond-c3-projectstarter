@@ -84,6 +84,7 @@ jobs:
       - run:
           name: Test the frontend
           command: |
+            exit
             cd frontend
             npm run test
 
@@ -97,6 +98,7 @@ jobs:
       - run:
           name: Test the backend
           command: |
+            exit
             cd backend
             npm run test
 
@@ -245,6 +247,7 @@ jobs:
           name: Install dependencies
           command: |
             cd frontend
+            cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
             npm i
             npm run build
