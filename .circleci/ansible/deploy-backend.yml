@@ -28,6 +28,11 @@
         src: ~/workspace/backend/dist
         dest: ./backend
 
+    - name: "Prepare the service"
+      ansible.builtin.copy:
+        src: ~/project/util/udapeople.service
+        dest: /etc/systemd/system/udapeople.service
+
     - name: "Debug 3"
       ansible.builtin.shell:
         cmd: ls -l
@@ -37,10 +42,14 @@
         chdir: ~/backend
         cmd: npm install
 
-    - name: "Start the service"
+    - name: "Prepare the ENV vars"
       ansible.builtin.shell: |
         cd ~/backend
-        screen -d -m npm run start 2>&1 </dev/null >output.log
+        env | grep TYPEORM_ > .env
+
+    - name: "Start the service"
+      ansible.builtin.shell: |
+        systemctl start udapeople
 
   environment:
     - TYPEORM_CONNECTION: postgres
