@@ -290,6 +290,7 @@ jobs:
       - run:
           name: Backend smoke test
           command: |
+            sleep 30
             cat ~/workspace/.local-vars
             source ~/workspace/.local-vars
             echo API_URL=$API_URL
