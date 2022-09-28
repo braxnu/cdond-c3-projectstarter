@@ -286,7 +286,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            ansible-playbook -v \
+            ansible-playbook -vvv \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
       #- destroy-environment
