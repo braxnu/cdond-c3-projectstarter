@@ -10,14 +10,6 @@
     - ansible_stdout_callback: yaml
 
   tasks:
-    - name: "Debug 1"
-      ansible.builtin.shell:
-        cmd: pwd
-
-    - name: "Debug 2"
-      ansible.builtin.shell:
-        cmd: ls -l
-
     - name: "Copy source and node_modules"
       ansible.builtin.copy:
         src: ~/project/backend
@@ -27,10 +19,6 @@
       ansible.builtin.copy:
         src: ~/workspace/backend/dist
         dest: ./backend
-
-    - name: "Debug 3"
-      ansible.builtin.shell:
-        cmd: ls -l
 
     - name: "NPM install"
       ansible.builtin.shell:
