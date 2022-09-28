@@ -15,7 +15,7 @@
   tasks:
     - name: "Add NodeJS to PPA"
       ansible.builtin.shell:
-        cmd: curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+        cmd: curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
     - name: "Install NodeJS"
       ansible.builtin.apt:
