@@ -9,6 +9,11 @@ commands:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
       - run:
+          name: Delete cloudfront stack
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name "udacity-cloudfront-$CIRCLE_WORKFLOW_ID" || true
+      - run:
           name: Delete all files from S3 bucket
           when: on_fail
           command: |
@@ -92,7 +97,6 @@ jobs:
       - run:
           name: Test the frontend
           command: |
-            exit
             cd frontend
             npm run test
 
@@ -106,7 +110,6 @@ jobs:
       - run:
           name: Test the backend
           command: |
-            exit
             cd backend
             npm run test
 
@@ -320,7 +323,7 @@ jobs:
               --stack-name "udacity-cloudfront-$CIRCLE_WORKFLOW_ID" \
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID=$CIRCLE_WORKFLOW_ID
-      # - destroy-environment
+      - destroy-environment
 
   cleanup:
     docker:
@@ -350,20 +353,39 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
-              only:
-                - test-feature-branch
-                - /^test-.+/
+              only: master
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+          filters:
+            branches:
+              only: master
       - run-migrations:
           requires: [configure-infrastructure]
+          filters:
+            branches:
+              only: master
       - deploy-frontend:
           requires: [run-migrations]
+          filters:
+            branches:
+              only: master
       - deploy-backend:
           requires: [run-migrations]
+          filters:
+            branches:
+              only: master
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
+          filters:
+            branches:
+              only: master
       - cloudfront-update:
           requires: [smoke-test]
+          filters:
+            branches:
+              only: master
       - cleanup:
           requires: [cloudfront-update]
+          filters:
+            branches:
+              only: master
