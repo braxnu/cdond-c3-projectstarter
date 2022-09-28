@@ -51,7 +51,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - run:
@@ -68,7 +68,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - restore_cache:
@@ -89,7 +89,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - restore_cache:
@@ -102,7 +102,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - restore_cache:
@@ -115,7 +115,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - restore_cache:
@@ -128,7 +128,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - restore_cache:
@@ -231,7 +231,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:14.20.1
+      - image: cimg/node:14.20.1
     steps:
       - checkout
       - aws-cli/setup
