@@ -1,28 +1,47 @@
 ---
 
-- name: "configuration play." 
+- name: "configuration play."
   hosts: web
   user: ubuntu
   become: true
   become_method: sudo
-  become_user: root  
+  become_user: root
   gather_facts: false
   vars:
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
-  pre_tasks:
-    - name: "wait 600 seconds for target connection to become reachable/usable."
-      # Your code here
+  tasks:
+    - name: "Add NodeJS to PPA"
+      ansible.builtin.shell:
+        cmd: curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
-    - name: "install python for Ansible."
-      # Your code here
+    - name: "Install NodeJS"
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
 
-  # Get the environment variables from CircleCI and add to the EC2 instance
+    - name: "Prepare the service"
+      ansible.builtin.copy:
+        src: ~/project/util/udapeople.service
+        dest: /etc/systemd/system/udapeople.service
+
+    - name: "Install PM2"
+      community.general.npm:
+        name: pm2
+        global: true
+
   environment:
-    - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
-    # Add more env vars here
+    - TYPEORM_CONNECTION: postgres
+    - TYPEORM_MIGRATIONS_DIR: ./src/migrations
+    - TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
+    - TYPEORM_MIGRATIONS: ./src/migrations/*.ts
+    - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
+    - TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT')}}"
+    - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
+    - TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}"
+    - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
 
   roles:
-    # Your code here
+    # TODO move logic to roles

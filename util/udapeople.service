@@ -1,0 +1,11 @@
+[Unit]
+Description=Udapeople service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+ExecStart=/bin/bash -c 'cd /home/ubuntu/backend && source .env && npm run start'
