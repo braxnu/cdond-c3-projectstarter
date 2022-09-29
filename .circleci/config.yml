@@ -297,7 +297,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: curlimages/curl
+      - image: cimg/deploy:2022.09
     steps:
       - aws-cli/setup
       - attach_workspace:
