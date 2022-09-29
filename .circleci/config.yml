@@ -124,6 +124,7 @@ jobs:
           name: Lint the frontend
           command: |
             cd frontend
+            npm audit
             npm run lint
 
   scan-backend:
@@ -137,6 +138,7 @@ jobs:
           name: Lint the backend
           command: |
             cd backend
+            npm audit
             npm run lint
 
   deploy-infrastructure:
