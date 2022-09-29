@@ -309,7 +309,9 @@ jobs:
 
             for i in $(seq 1 10); do
               [ $i -gt 9 ] && exit 1
-              ((curl -f "$API_URL/api/Employees" > /dev/null) && break) || sleep 10
+              (curl -f "$API_URL/api/Employees" > /dev/null); R=$?
+              [ $R -eq 0 ] && break
+              [ $R -ne 0 ] && sleep 10
             done
       - run:
           name: Frontend smoke test
@@ -319,7 +321,9 @@ jobs:
 
             for i in $(seq 1 10); do
               [ $i -gt 9 ] && exit 1
-              ((curl -f "$BUCKET_URL" | grep Welcome) && break) || sleep 10
+              (curl -f "$BUCKET_URL" | grep Welcome); R=$?
+              [ $R -eq 0 ] && break
+              [ $R -ne 0 ] && sleep 10
             done
       - destroy-environment
 
