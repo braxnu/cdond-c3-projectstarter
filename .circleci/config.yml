@@ -375,7 +375,6 @@ workflows:
               only: master
       - deploy-backend:
           requires: [run-migrations]
-          requires: [configure-infrastructure]
           filters:
             branches:
               only: master
