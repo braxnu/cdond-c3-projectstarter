@@ -195,6 +195,8 @@ jobs:
           command: |
             cat .local-vars
 
+            echo '[web]' > .circleci/ansible/inventory.txt
+
             aws ec2 describe-instances \
               --filters "Name=instance-state-name,Values=running" \
               --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' \
