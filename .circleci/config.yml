@@ -299,6 +299,7 @@ jobs:
     docker:
       - image: curlimages/curl
     steps:
+      - aws-cli/setup
       - attach_workspace:
           at: ~/workspace
       - run:
@@ -309,7 +310,7 @@ jobs:
 
             for i in $(seq 1 10); do
               [ $i -gt 9 ] && exit 1
-              curl "$API_URL/api/Employees" > /dev/null && break || sleep 10
+              curl "$API_URL/api/EmployeXes" > /dev/null && break || sleep 10
             done
       - run:
           name: Frontend smoke test
@@ -321,6 +322,8 @@ jobs:
               [ $i -gt 9 ] && exit 1
               curl "$BUCKET_URL" | grep Welcome > /dev/null && break || sleep 10
             done
+      - destroy-environment
+
   cloudfront-update:
     docker:
       - image: cimg/aws:2022.06
