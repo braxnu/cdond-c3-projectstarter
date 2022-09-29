@@ -72,10 +72,10 @@
         cd ~/backend
 
         docker run -d \
-          --restart always
+          --restart always \
           --network host \
           --env-file .env \
-          -v $(pwd):/home/node/backend
+          -v $(pwd):/home/node/backend \
           node:13-alpine \
           sh -c 'cd /home/node/backend && npm i && npm start'
 
