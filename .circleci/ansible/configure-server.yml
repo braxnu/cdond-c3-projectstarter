@@ -58,25 +58,6 @@
         name: ubuntu
         group: docker
 
-    # - name: "Add NodeJS to PPA"
-    #   ansible.builtin.shell:
-    #     cmd: curl -fsSL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-
-    # - name: "Install NodeJS"
-    #   ansible.builtin.apt:
-    #     name: nodejs
-    #     state: present
-
-    # - name: "Prepare the service"
-    #   ansible.builtin.copy:
-    #     src: ~/project/util/udapeople.service
-    #     dest: /etc/systemd/system/udapeople.service
-
-    # - name: "Install PM2"
-    #   community.general.npm:
-    #     name: pm2
-    #     global: true
-
   environment:
     - TYPEORM_CONNECTION: postgres
     - TYPEORM_MIGRATIONS_DIR: ./src/migrations
