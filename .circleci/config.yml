@@ -194,13 +194,8 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             cat .local-vars
-
-            echo '[web]' > .circleci/ansible/inventory.txt
-
-            aws ec2 describe-instances \
-              --filters "Name=instance-state-name,Values=running" \
-              --query 'Reservations[*].Instances[*].NetworkInterfaces[*].Association.PublicDnsName' \
-              --output text >> .circleci/ansible/inventory.txt
+            source .local-vars
+            echo $BACKEND_HOSTNAME >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -226,6 +221,8 @@ jobs:
       - run:
           name: Configure server
           command: |
+            cat workspace/project/.circleci/ansible/inventory.txt
+
             ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
