@@ -224,7 +224,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook -vvv \
+            ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
       #- destroy-environment
@@ -284,9 +284,13 @@ jobs:
             python3 -m pip install --user ansible
             ansible-galaxy collection install community.general
       - run:
+          name: Prepare a package
+          command: |
+            tar --exclude=node_modules -zcf backend.tar.gz backend
+      - run:
           name: Deploy backend
           command: |
-            ansible-playbook -vvv \
+            ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
       #- destroy-environment

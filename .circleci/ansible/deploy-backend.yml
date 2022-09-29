@@ -10,15 +10,24 @@
     - ansible_stdout_callback: yaml
 
   tasks:
-    - name: "Copy source and node_modules"
+    # - name: "Copy source and node_modules"
+    #   ansible.builtin.copy:
+    #     src: ~/project/backend
+    #     dest: ./
+
+    # - name: "Copy built assets"
+    #   ansible.builtin.copy:
+    #     src: ~/workspace/backend/dist
+    #     dest: ./backend
+
+    - name: "Download the package"
       ansible.builtin.copy:
-        src: ~/project/backend
+        src: ~/project/backend.tar.gz
         dest: ./
 
-    - name: "Copy built assets"
-      ansible.builtin.copy:
-        src: ~/workspace/backend/dist
-        dest: ./backend
+    - name: "Unpack the package"
+      ansible.builtin.shell: |
+        tar -xf backend.tar.gz
 
     - name: "Prepare the ENV vars"
       ansible.builtin.shell: |
