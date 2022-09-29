@@ -20,11 +20,6 @@
         src: ~/workspace/backend/dist
         dest: ./backend
 
-    - name: "NPM install"
-      ansible.builtin.shell:
-        chdir: ~/backend
-        cmd: npm install
-
     - name: "Prepare the ENV vars"
       ansible.builtin.shell: |
         cd ~/backend
@@ -57,10 +52,23 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
+  # tasks:
+  #   - name: "Start the service"
+  #     ansible.builtin.shell: |
+  #       systemctl start udapeople
+
   tasks:
-    - name: "Start the service"
+    - name: "Start as a service"
       ansible.builtin.shell: |
-        systemctl start udapeople
+        cd ~/backend
+
+        docker run -d \
+          --restart always
+          --network host \
+          --env-file .env \
+          -v $(pwd):/home/node/backend
+          node:13-alpine \
+          sh -c 'cd /home/node/backend && npm i && npm start'
 
   environment:
     - TYPEORM_CONNECTION: postgres

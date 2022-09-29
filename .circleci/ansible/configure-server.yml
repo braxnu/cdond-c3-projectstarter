@@ -13,24 +13,59 @@
     - ansible_stdout_callback: yaml
 
   tasks:
-    - name: "Add NodeJS to PPA"
-      ansible.builtin.shell:
-        cmd: curl -fsSL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
 
-    - name: "Install NodeJS"
-      ansible.builtin.apt:
-        name: nodejs
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    - name: "Prepare the service"
-      ansible.builtin.copy:
-        src: ~/project/util/udapeople.service
-        dest: /etc/systemd/system/udapeople.service
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
 
-    - name: "Install PM2"
-      community.general.npm:
-        name: pm2
-        global: true
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    # - name: "Add NodeJS to PPA"
+    #   ansible.builtin.shell:
+    #     cmd: curl -fsSL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+    # - name: "Install NodeJS"
+    #   ansible.builtin.apt:
+    #     name: nodejs
+    #     state: present
+
+    # - name: "Prepare the service"
+    #   ansible.builtin.copy:
+    #     src: ~/project/util/udapeople.service
+    #     dest: /etc/systemd/system/udapeople.service
+
+    # - name: "Install PM2"
+    #   community.general.npm:
+    #     name: pm2
+    #     global: true
 
   environment:
     - TYPEORM_CONNECTION: postgres
