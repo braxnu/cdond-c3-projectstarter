@@ -124,7 +124,6 @@ jobs:
           name: Lint the frontend
           command: |
             cd frontend
-            npm audit
             npm run lint
 
   scan-backend:
@@ -138,7 +137,6 @@ jobs:
           name: Lint the backend
           command: |
             cd backend
-            npm audit
             npm run lint
 
   deploy-infrastructure:
@@ -205,7 +203,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      #- destroy-environment
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -229,7 +227,7 @@ jobs:
             ansible-playbook -v \
               -i workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
-      #- destroy-environment
+      - destroy-environment
 
   run-migrations:
     docker:
@@ -267,7 +265,7 @@ jobs:
             export API_URL=$API_URL
             npm run build
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
-      #- destroy-environment
+      - destroy-environment
 
   deploy-backend:
     docker:
@@ -295,7 +293,7 @@ jobs:
             ansible-playbook -v \
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
-      #- destroy-environment
+      - destroy-environment
 
   smoke-test:
     docker:
@@ -335,7 +333,7 @@ jobs:
               --stack-name "udacity-cloudfront-$CIRCLE_WORKFLOW_ID" \
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID=$CIRCLE_WORKFLOW_ID
-      #- destroy-environment
+      - destroy-environment
 
   cleanup:
     docker:
