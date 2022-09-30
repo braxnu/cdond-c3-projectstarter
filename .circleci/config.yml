@@ -32,8 +32,6 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
-      - node/install:
-          node-version: '13.8.0'
       - run:
           name: Revert migrations
           when: on_fail
@@ -266,6 +264,8 @@ jobs:
       - image: cimg/python:3.10.7
     steps:
       - checkout
+      - node/install:
+          node-version: '13.8.0'
       - aws-cli/setup
       - add_ssh_keys:
           fingerprints:
@@ -295,6 +295,8 @@ jobs:
       - image: cimg/deploy:2022.09
     steps:
       - checkout
+      - node/install:
+          node-version: '13.8.0'
       - aws-cli/setup
       - attach_workspace:
           at: ~/workspace
@@ -329,6 +331,8 @@ jobs:
       - image: cimg/aws:2022.06
     steps:
       - checkout
+      - node/install:
+          node-version: '13.8.0'
       - run:
           name: Update cloudfront distribution
           command: |
