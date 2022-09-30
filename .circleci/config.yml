@@ -294,6 +294,7 @@ jobs:
     docker:
       - image: cimg/deploy:2022.09
     steps:
+      - checkout
       - aws-cli/setup
       - attach_workspace:
           at: ~/workspace
