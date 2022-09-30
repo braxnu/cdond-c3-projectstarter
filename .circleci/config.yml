@@ -31,27 +31,21 @@ commands:
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      # Add parameter here
     steps:
+      - node/install:
+          node-version: '13.8.0'
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 ));
-            then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
-            fi
+            cd ~/project/backend
+            npm i
+            npm run migrations:revert
 
 jobs:
   build-frontend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - run:
@@ -68,7 +62,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -89,7 +83,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -102,7 +96,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -115,7 +109,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -128,7 +122,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -230,7 +224,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:14.20.1
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - aws-cli/setup
@@ -248,7 +242,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: '14.20.1'
+          node-version: '13.8.0'
       - restore_cache:
           keys: [frontend-build]
       - attach_workspace:
@@ -265,6 +259,7 @@ jobs:
             npm run build
             aws s3 cp ./dist s3://$BUCKET_NAME/ --recursive
       - destroy-environment
+      - revert-migrations
 
   deploy-backend:
     docker:
@@ -293,6 +288,7 @@ jobs:
               -i ~/workspace/project/.circleci/ansible/inventory.txt \
               .circleci/ansible/deploy-backend.yml
       - destroy-environment
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -303,13 +299,14 @@ jobs:
           at: ~/workspace
       - run:
           name: Backend smoke test
+          # FIXME fail on purpose
           command: |
             source ~/workspace/.local-vars
             export API_URL=$API_URL
 
             for i in $(seq 1 10); do
               [ $i -gt 9 ] && exit 1
-              (curl -f "$API_URL/api/Employees" > /dev/null) && exit 0 || R=$?
+              (curl -f "$API_URL/api/EmployXees" > /dev/null) && exit 0 || R=$?
               [ $R -ne 0 ] && sleep 10
             done
       - run:
@@ -324,6 +321,7 @@ jobs:
               [ $R -ne 0 ] && sleep 10
             done
       - destroy-environment
+      - revert-migrations
 
   cloudfront-update:
     docker:
@@ -338,6 +336,7 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID=$CIRCLE_WORKFLOW_ID
       - destroy-environment
+      - revert-migrations
 
   cleanup:
     docker:
