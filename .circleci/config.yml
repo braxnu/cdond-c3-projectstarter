@@ -302,14 +302,13 @@ jobs:
           at: ~/workspace
       - run:
           name: Backend smoke test
-          # FIXME fail on purpose
           command: |
             source ~/workspace/.local-vars
             export API_URL=$API_URL
 
             for i in $(seq 1 10); do
               [ $i -gt 9 ] && exit 1
-              (curl -f "$API_URL/api/EmployXees" > /dev/null) && exit 0 || R=$?
+              (curl -f "$API_URL/api/Employees" > /dev/null) && exit 0 || R=$?
               [ $R -ne 0 ] && sleep 10
             done
       - run:
